@@ -56,10 +56,13 @@
     /* PDF Card */
     .pdf-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
     .badge { background: #0284c7; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-bottom: 6px; display: inline-block; }
+    .type-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; margin-left: 6px; font-weight: 700; }
+    .badge-drive { background: #10b981; color: #fff; }
+    .badge-local { background: #f59e0b; color: #000; }
     .action-row { display: flex; gap: 8px; margin-top: 10px; }
     .act-btn { flex: 1; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-align: center; }
     .act-view { background: #0284c7; color: #fff; }
-    .act-dl { background: #1e293b; color: #fff; text-decoration: none; display: inline-block; }
+    .act-dl { background: #1e293b; color: #fff; }
     .act-off { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
     /* Admin Action Controls */
@@ -67,10 +70,23 @@
     .adm-stop { background: #d97706; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
     .adm-del { background: #ef4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
 
+    /* Modal / Popup for Upload Options */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
+    .modal-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; width: 100%; max-width: 400px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .modal-box h3 { font-size: 16px; margin-bottom: 12px; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; }
+    .modal-close { background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; }
+    .opt-card { background: #131d31; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+    .opt-card:hover { border-color: #38bdf8; }
+    .opt-card h4 { font-size: 13px; margin-bottom: 3px; color: #fff; }
+    .opt-card p { font-size: 11px; color: #94a3b8; }
+    .form-group { margin-top: 10px; }
+    .form-group label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px; }
+    .form-group input { width: 100%; padding: 8px 10px; border-radius: 6px; background: #070b14; border: 1px solid #1e293b; color: #fff; font-size: 13px; outline: none; }
+    .form-group input:focus { border-color: #38bdf8; }
+
     /* Footer & Bottom Banner */
     .footer-pill { text-align: center; margin-top: 20px; margin-bottom: 14px; }
     .insta-link { display: inline-flex; align-items: center; gap: 6px; background: #0b1528; border: 1px solid #1e3a5f; color: #38bdf8; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    
     .bottom-banner-box { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 8px; margin-bottom: 25px; border: 1px solid #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background: #0f172a; min-height: 140px; }
     .bottom-banner-box img { width: 100%; height: auto; display: block; }
   </style>
@@ -89,21 +105,18 @@
     </div>
   </div>
 
-  <!-- Admin Bar (सिर्फ पासवर्ड डालने पर दिखेगा) -->
+  <!-- Admin Bar -->
   <div id="adminBar">
     <span>🛡️ एडमिन एक्टिव</span>
     <div class="adm-actions">
-      <button class="adm-btn adm-banner-btn" onclick="document.getElementById('bannerUploadInput').click()">+ बैनर जोड़ें</button>
-      <button class="adm-btn" onclick="addNewPdf()">+ PDF जोड़ें</button>
+      <button class="adm-btn adm-banner-btn" onclick="document.getElementById('bannerUploadInput').click()">+ बैनर बदलें</button>
+      <button class="adm-btn" onclick="openUploadModal()">+ PDF जोड़ें</button>
       <button class="adm-btn adm-logout" onclick="logout()">लॉगआउट</button>
     </div>
   </div>
 
-  <!-- गैलरी से बैनर उठाने के लिए इनपुट -->
   <input type="file" id="bannerUploadInput" accept="image/*" style="display:none;" onchange="uploadBannerFile(event)">
-
-  <!-- फोन से सीधे PDF चुनने के लिए इनपुट -->
-  <input type="file" id="directPdfInput" accept="application/pdf" style="display:none;" onchange="uploadDirectPdf(event)">
+  <input type="file" id="directPdfInput" accept="application/pdf" style="display:none;" onchange="uploadLocalPdfFile(event)">
 
   <!-- 1. HOME SCREEN -->
   <div id="viewHome" class="page-section active">
@@ -134,7 +147,7 @@
   <div id="viewSubjects" class="page-section">
     <div class="nav-bar">
       <button class="btn-back" onclick="goScreen('viewHome')">← Back</button>
-      <button class="adm-btn" id="admSubAdd" style="display:none;" onclick="addNewPdf()">+ PDF जोड़ें</button>
+      <button class="adm-btn" id="admSubAdd" style="display:none;" onclick="openUploadModal()">+ PDF जोड़ें</button>
     </div>
     <h3 id="txtSubHeading" style="font-size: 15px; margin-bottom: 10px;">विषय सूची</h3>
     <div id="subjectBox"></div>
@@ -144,10 +157,42 @@
   <div id="viewPdf" class="page-section">
     <div class="nav-bar">
       <button class="btn-back" onclick="goScreen('viewSubjects')">← Back</button>
-      <button class="adm-btn" id="admPdfAdd" style="display:none;" onclick="addNewPdf()">+ इस सेक्शन में PDF जोड़ें</button>
+      <button class="adm-btn" id="admPdfAdd" style="display:none;" onclick="openUploadModal()">+ इस सेक्शन में PDF जोड़ें</button>
     </div>
     <h3 id="txtPdfHeading" style="font-size: 15px; margin-bottom: 10px;">अध्ययन सामग्री</h3>
     <div id="pdfListBox"></div>
+  </div>
+
+  <!-- PDF चुनाव मॉडल -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-box">
+      <h3>
+        <span>📁 PDF अपलोड का माध्यम चुनें</span>
+        <button class="modal-close" onclick="closeUploadModal()">&times;</button>
+      </h3>
+      
+      <div class="opt-card" onclick="showDriveForm()">
+        <h4>🌍 Google Drive लिंक (पूरी दुनिया के लिए)</h4>
+        <p>Google Drive का 'Anyone with link' शेयर लिंक डालें।</p>
+      </div>
+
+      <div id="driveFormBox" style="display:none; margin-bottom:12px; border-top:1px dashed #1e293b; padding-top:10px;">
+        <div class="form-group">
+          <label>PDF शीर्षक (Title):</label>
+          <input type="text" id="driveTitle" placeholder="जैसे: Chapter 1 Full Notes">
+        </div>
+        <div class="form-group">
+          <label>Google Drive शेयर लिंक:</label>
+          <input type="text" id="driveUrl" placeholder="https://drive.google.com/file/d/...">
+        </div>
+        <button class="adm-btn" style="width:100%; margin-top:8px; padding:8px;" onclick="saveDrivePdf()">पब्लिक PDF सेव करें</button>
+      </div>
+
+      <div class="opt-card" onclick="chooseLocalPdf()">
+        <h4>📱 फ़ोन स्टोरेज से चुनें (लोकल)</h4>
+        <p>सीधे फ़ोन के मीडिया पिकर से फ़ाइल चुनें।</p>
+      </div>
+    </div>
   </div>
 
   <!-- DIRECT STUDY SEARCH FOOTER -->
@@ -163,36 +208,51 @@
   <div class="bottom-banner-box">
     <img id="imgBanner" src="1000084603.jpg" alt="ConceptClear Banner" onerror="this.src='https://via.placeholder.com/600x320?text=ConceptClear+Banner'">
   </div>
-
   <script>
     var currentClass = '6';
     var currentSection = 'Important Questions';
     var currentLang = 'hi';
     var isTeacher = false;
 
-    // Local Storage से सेव्ड बैनर लोड करना
-    var savedBanner = localStorage.getItem('cc_custom_banner');
-    if (savedBanner) {
-      document.getElementById('imgBanner').src = savedBanner;
-    }
-
-    // Local Storage से सेव्ड PDF डेटा लोड करना
-    var savedDb = localStorage.getItem('cc_study_db');
-    var db = savedDb ? JSON.parse(savedDb) : {
+    var db = {
       '6': {
-        'Model Paper': [{ id: 1, title: 'Class 6 - Model Paper 2026', desc: 'Sample Papers & Solutions', url: '', stop: false }],
-        'Important Questions': [{ id: 2, title: 'Class 6 - Important Questions', desc: 'Exam Special Questions', url: '', stop: false }],
-        'Mathematics': [{ id: 3, title: 'Chapter 1 - Knowing Our Numbers', desc: 'Full Formulas & Notes', url: '', stop: false }]
+        'Model Paper': [{ id: 1, title: 'Class 6 - Model Paper 2026', desc: 'Sample Papers & Solutions', url: '', stop: false, source: 'drive' }],
+        'Important Questions': [{ id: 2, title: 'Class 6 - Important Questions', desc: 'Exam Special Questions', url: '', stop: false, source: 'drive' }],
+        'Mathematics': [{ id: 3, title: 'Chapter 1 - Knowing Our Numbers', desc: 'Full Formulas & Notes', url: '', stop: false, source: 'drive' }]
       }
     };
 
-    function saveToLocal() {
-      try {
-        localStorage.setItem('cc_study_db', JSON.stringify(db));
-      } catch (e) {
-        console.warn('Local storage size limit exceeded or private browsing mode.');
-      }
+    function fetchGlobalData() {
+      fetch('https://api.npoint.io/46869408b06c57f7ca72')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.db) {
+            db = data.db;
+            if (data.banner) document.getElementById('imgBanner').src = data.banner;
+            if (document.getElementById('viewPdf').classList.contains('active')) buildPdfList();
+          }
+        })
+        .catch(err => {
+          var saved = localStorage.getItem('cc_study_db');
+          if (saved) db = JSON.parse(saved);
+          var b = localStorage.getItem('cc_custom_banner');
+          if (b) document.getElementById('imgBanner').src = b;
+        });
     }
+
+    function saveGlobalData() {
+      localStorage.setItem('cc_study_db', JSON.stringify(db));
+      fetch('https://api.npoint.io/46869408b06c57f7ca72', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          db: db,
+          banner: document.getElementById('imgBanner').src
+        })
+      }).catch(e => console.log('Syncing...'));
+    }
+
+    fetchGlobalData();
 
     function goScreen(id) {
       document.getElementById('viewHome').className = 'page-section';
@@ -221,10 +281,10 @@
       var list = [
         { name: 'Model Paper', desc: isHi ? 'सभी विषयों के मॉडल पेपर' : 'All subjects model papers', icon: '📝', special: true },
         { name: 'Important Questions', desc: isHi ? 'परीक्षा उपयोगी महत्वपूर्ण प्रश्न' : 'High scoring questions', icon: '⭐', special: true },
-        { name: isHi ? 'गणित (Mathematics)' : 'Mathematics', raw: 'Mathematics', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '📐' },
-        { name: isHi ? 'विज्ञान (Science)' : 'Science', raw: 'Science', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '🔬' },
-        { name: isHi ? 'अंग्रेजी (English)' : 'English', raw: 'English', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '🔤' },
-        { name: isHi ? 'हिंदी (Hindi)' : 'Hindi', raw: 'Hindi', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '📚' }
+        { name: 'गणित (Mathematics)', raw: 'Mathematics', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '📐' },
+        { name: 'विज्ञान (Science)', raw: 'Science', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '🔬' },
+        { name: 'अंग्रेजी (English)', raw: 'English', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '🔤' },
+        { name: 'हिंदी (Hindi)', raw: 'Hindi', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '📚' }
       ];
 
       var box = document.getElementById('subjectBox');
@@ -240,12 +300,21 @@
       }
     }
 
+    function extractDriveId(url) {
+      if (!url) return null;
+      var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (m && m[1]) return m[1];
+      var m2 = url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (m2 && m2[1]) return m2[1];
+      return null;
+    }
+
     function buildPdfList() {
       var box = document.getElementById('pdfListBox');
       box.innerHTML = '';
 
       if (!db[currentClass]) db[currentClass] = {};
-      if (!db[currentClass][currentSection]) db[currentSection] = [];
+      if (!db[currentClass][currentSection]) db[currentClass][currentSection] = [];
       var items = db[currentClass][currentSection] || [];
 
       if (items.length === 0) {
@@ -260,7 +329,7 @@
 
         var dlBtn = item.stop
           ? '<button class="act-btn act-off">⛔ Download Stopped</button>'
-          : '<a class="act-btn act-dl" href="' + (item.url || '#') + '" download="' + item.title + '.pdf" onclick="handleDl(event, \'' + item.url + '\')">⬇ Download PDF</a>';
+          : '<button class="act-btn act-dl" onclick="doDl(' + item.id + ')">⬇ Download PDF</button>';
 
         var admBtns = isTeacher
           ? '<div class="adm-controls">' +
@@ -269,11 +338,15 @@
             '</div>'
           : '';
 
-        d.innerHTML = '<span class="badge">' + currentSection + '</span>' +
+        var badgeType = item.source === 'drive' 
+          ? '<span class="type-badge badge-drive">🌍 Google Drive</span>' 
+          : '<span class="type-badge badge-local">📱 Local</span>';
+
+        d.innerHTML = '<div><span class="badge">' + currentSection + '</span>' + badgeType + '</div>' +
           '<h4>' + item.title + '</h4>' +
           '<p style="font-size:12px; color:#94a3b8; margin:2px 0 8px;">' + item.desc + '</p>' +
           '<div class="action-row">' +
-            '<button class="act-btn act-view" onclick="doView(\'' + item.url + '\')">👁 View & Zoom</button>' +
+            '<button class="act-btn act-view" onclick="doView(' + item.id + ')">👁 View & Zoom</button>' +
             dlBtn +
           '</div>' + admBtns;
 
@@ -281,20 +354,68 @@
       }
     }
 
-    function doView(url) {
-      if (url) {
-        var win = window.open();
-        win.document.write('<title>PDF Viewer</title><body style="margin:0; background:#000;"><iframe src="' + url + '" frameborder="0" style="border:none; width:100vw; height:100vh;"></iframe></body>');
+    // View & Zoom
+    function doView(id) {
+      var item = findItemById(id);
+      if (!item || !item.url) {
+        alert('PDF लिंक उपलब्ध नहीं है!');
+        return;
+      }
+
+      var driveId = extractDriveId(item.url);
+      if (driveId) {
+        window.open('https://drive.google.com/file/d/' + driveId + '/preview', '_blank');
+      } else if (item.url.startsWith('data:application/pdf')) {
+        var blob = dataURItoBlob(item.url);
+        var blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
       } else {
-        alert('PDF Viewer: जल्द लिंक किया जाएगा!');
+        window.open(item.url, '_blank');
       }
     }
 
-    function handleDl(e, url) {
-      if (!url) {
-        e.preventDefault();
-        alert('डाउनलोड शुरू हो रहा है...');
+    // Direct Working Download
+    function doDl(id) {
+      var item = findItemById(id);
+      if (!item || !item.url) {
+        alert('डाउनलोड लिंक उपलब्ध नहीं है!');
+        return;
       }
+
+      var driveId = extractDriveId(item.url);
+      if (driveId) {
+        window.open('https://drive.google.com/file/d/' + driveId + '/view', '_blank');
+      } else if (item.url.startsWith('data:application/pdf')) {
+        var blob = dataURItoBlob(item.url);
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = (item.title || 'study_notes') + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        window.open(item.url, '_blank');
+      }
+    }
+
+    function dataURItoBlob(dataURI) {
+      var byteString = atob(dataURI.split(',')[1]);
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      var ab = new ArrayBuffer(byteString.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: mimeString });
+    }
+
+    function findItemById(id) {
+      var list = db[currentClass][currentSection] || [];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].id === id) return list[i];
+      }
+      return null;
     }
 
     function toggleStop(id) {
@@ -305,15 +426,17 @@
           break;
         }
       }
-      saveToLocal();
+      saveGlobalData();
       buildPdfList();
+      alert('डाउनलोड स्टेटस अपडेट हो गया!');
     }
 
     function delPdf(id) {
       if (confirm('क्या आप इसे हटाना चाहते हैं?')) {
         db[currentClass][currentSection] = db[currentClass][currentSection].filter(function(x) { return x.id !== id; });
-        saveToLocal();
+        saveGlobalData();
         buildPdfList();
+        alert('PDF हटा दी गई!');
       }
     }
 
@@ -347,6 +470,85 @@
       if (document.getElementById('viewPdf').classList.contains('active')) buildPdfList();
     }
 
+    function openUploadModal() {
+      document.getElementById('uploadModal').style.display = 'flex';
+      document.getElementById('driveFormBox').style.display = 'none';
+    }
+
+    function closeUploadModal() {
+      document.getElementById('uploadModal').style.display = 'none';
+    }
+
+    function showDriveForm() {
+      document.getElementById('driveFormBox').style.display = 'block';
+    }
+
+    function saveDrivePdf() {
+      var title = document.getElementById('driveTitle').value.trim();
+      var url = document.getElementById('driveUrl').value.trim();
+
+      if (!title || !url) {
+        alert('कृपया शीर्षक और Google Drive लिंक दोनों भरें!');
+        return;
+      }
+
+      if (!db[currentClass]) db[currentClass] = {};
+      if (!db[currentClass][currentSection]) db[currentSection] = [];
+
+      db[currentClass][currentSection].push({
+        id: Date.now(),
+        title: title,
+        desc: 'Google Drive Public File',
+        url: url,
+        stop: false,
+        source: 'drive'
+      });
+
+      saveGlobalData();
+      buildPdfList();
+      closeUploadModal();
+      document.getElementById('driveTitle').value = '';
+      document.getElementById('driveUrl').value = '';
+      alert('Google Drive PDF जुड़ गई! अब View और Download दोनों चालू हैं।');
+    }
+
+    function chooseLocalPdf() {
+      closeUploadModal();
+      document.getElementById('directPdfInput').click();
+    }
+
+    function uploadLocalPdfFile(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      var defaultTitle = file.name.replace(/\.pdf$/i, '');
+      var title = prompt('PDF का नाम (Title):', defaultTitle);
+      if (!title) return;
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var pdfDataUrl = e.target.result;
+
+        if (!db[currentClass]) db[currentClass] = {};
+        if (!db[currentClass][currentSection]) db[currentSection] = [];
+
+        db[currentClass][currentSection].push({
+          id: Date.now(),
+          title: title,
+          desc: 'Internal Storage File',
+          url: pdfDataUrl,
+          stop: false,
+          source: 'local'
+        });
+
+        saveGlobalData();
+        buildPdfList();
+        alert('फ़ोन स्टोरेज से PDF जुड़ गई!');
+        document.getElementById('directPdfInput').value = "";
+      };
+      reader.readAsDataURL(file);
+    }
+
     function uploadBannerFile(event) {
       var file = event.target.files[0];
       if (file) {
@@ -355,7 +557,8 @@
           var imgData = e.target.result;
           document.getElementById('imgBanner').src = imgData;
           localStorage.setItem('cc_custom_banner', imgData);
-          alert('नया बैनर सफलतापूर्वक अपलोड और सेव हो गया!');
+          saveGlobalData();
+          alert('नया बैनर अपडेट हो गया!');
         };
         reader.readAsDataURL(file);
       }
@@ -369,45 +572,6 @@
         var u = document.getElementById('txtInstaId').innerText.replace('@', '');
         window.open('https://instagram.com/' + u, '_blank');
       }
-    }
-
-    // सीधे फोन के मीडिया पिकर को खोलना
-    function addNewPdf() {
-      document.getElementById('directPdfInput').click();
-    }
-
-    // फोन से PDF चुनने के बाद का प्रोसेस
-    function uploadDirectPdf(event) {
-      var file = event.target.files[0];
-      if (!file) return;
-
-      var defaultTitle = file.name.replace(/\.pdf$/i, '');
-      var title = prompt('PDF का शीर्षक (Title) लिखें या ठीक रहने दें:', defaultTitle);
-      if (!title) return;
-
-      var desc = prompt('विवरण (Description):', 'Complete study notes') || 'Notes';
-
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var pdfDataUrl = e.target.result;
-
-        if (!db[currentClass]) db[currentClass] = {};
-        if (!db[currentClass][currentSection]) db[currentClass][currentSection] = [];
-
-        db[currentClass][currentSection].push({
-          id: Date.now(),
-          title: title,
-          desc: desc,
-          url: pdfDataUrl,
-          stop: false
-        });
-
-        saveToLocal();
-        buildPdfList();
-        alert('PDF फाइल फोन से सफलतापूर्वक जोड़ दी गई!');
-        document.getElementById('directPdfInput').value = ""; // रीसेट
-      };
-      reader.readAsDataURL(file);
     }
 
     function setMed(m) {
@@ -427,4 +591,3 @@
   </script>
 </body>
 </html>
-  
