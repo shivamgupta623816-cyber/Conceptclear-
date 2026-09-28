@@ -4,533 +4,427 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConceptClear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: radial-gradient(circle at top, #0f172a, #030712);
-      color: #f8fafc;
-      min-height: 100vh;
-      padding-bottom: 30px;
-    }
-    header {
-      background: #0b1120;
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #1e293b;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      font-size: 20px;
-      font-weight: 800;
-      color: #38bdf8;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
-    .logo span {
-      font-size: 11px;
-      color: #94a3b8;
-    }
-    .header-right {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .lang-dropdown {
-      background: #1e293b;
-      color: #38bdf8;
-      border: 1px solid #334155;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-    }
-    .btn-teacher {
-      background: #0284c7;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-logout {
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .teacher-bar {
-      display: none;
-      background: #0f172a;
-      border: 1px solid #0284c7;
-      padding: 10px 14px;
-      margin: 12px auto;
-      max-width: 480px;
-      border-radius: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 12px;
-    }
-    .medium-toggle {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .medium-btn {
-      flex: 1;
-      padding: 10px;
-      background: #1e293b;
-      color: #94a3b8;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .medium-btn.active {
-      background: #0284c7;
-      color: #fff;
-      border-color: #38bdf8;
-    }
-    .banner {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid #334155;
-      margin-bottom: 16px;
-      display: block;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-    .badge {
-      background: #1e293b;
-      color: #38bdf8;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      border: 1px solid #0284c7;
-    }
-    .class-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .class-card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      padding: 12px 6px;
-      border-radius: 10px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-    }
-    .class-card:hover {
-      border-color: #38bdf8;
-    }
-    .class-card h4 {
-      font-size: 9px;
-      color: #64748b;
-      text-transform: uppercase;
-    }
-    .class-card .num {
-      font-size: 20px;
-      font-weight: 800;
-      color: #f8fafc;
-      margin: 2px 0;
-    }
-    .class-card p {
-      font-size: 9px;
-      color: #94a3b8;
-    }
-    .btn-back {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      padding: 6px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-bottom: 14px;
-    }
-    .subject-card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-    .note-card {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      position: relative;
-    }
-    .note-tag {
-      font-size: 10px;
-      background: #1e293b;
-      color: #38bdf8;
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-    }
-    .note-title {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .note-desc {
-      font-size: 11px;
-      color: #94a3b8;
-      margin-bottom: 12px;
-    }
-    .note-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .btn-action {
-      flex: 1;
-      padding: 8px;
-      font-size: 12px;
-      border-radius: 6px;
-      text-align: center;
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-view {
-      background: #0284c7;
-      color: #fff;
-    }
-    .btn-download {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #334155;
-    }
-    .btn-menu {
-      background: none;
-      border: none;
-      color: #94a3b8;
-      font-size: 18px;
-      cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 12px;
-    }
-    .menu-popup {
-      display: none;
-      position: absolute;
-      top: 36px;
-      right: 10px;
-      background: #020617;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      z-index: 10;
-      width: 140px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
-    }
-    .menu-popup button {
-      width: 100%;
-      text-align: left;
-      padding: 8px 12px;
-      background: none;
-      border: none;
-      font-size: 11px;
-      color: #f8fafc;
-      cursor: pointer;
-    }
-    .menu-popup button:hover {
-      background: #1e293b;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
-    }
-    .modal-box {
-      background: #0f172a;
-      border: 1px solid #334155;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 360px;
-    }
-    .modal-box input, .modal-box select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #fff;
-      border-radius: 6px;
-    }
-    .telegram-btn {
-      margin-top: 20px;
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 12px;
-      color: #38bdf8;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: #070b14; color: #f8fafc; padding: 12px; max-width: 480px; margin: 0 auto; min-height: 100vh; }
+    
+    /* Header */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .brand-title { font-size: 20px; font-weight: 800; color: #38bdf8; }
+    .brand-sub { font-size: 11px; color: #94a3b8; }
+    .header-btns { display: flex; gap: 6px; }
+    .btn-top { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1px solid #1e293b; background: #131d31; color: #fff; }
+    .btn-premium { background: #0284c7; border: none; }
+
+    /* Admin Bar */
+    #adminBar { display: none; background: #064e3b; border: 1px solid #059669; border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; justify-content: space-between; align-items: center; }
+    #adminBar span { font-size: 11px; font-weight: 700; color: #a7f3d0; }
+    .adm-actions { display: flex; gap: 5px; }
+    .adm-btn { background: #0284c7; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .adm-banner-btn { background: #0d9488; }
+    .adm-logout { background: #ef4444; }
+
+    /* Medium Toggle */
+    .medium-box { display: flex; background: #0d1527; padding: 4px; border-radius: 10px; border: 1px solid #1e293b; margin-bottom: 14px; }
+    .med-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: 700; font-size: 13px; border-radius: 6px; cursor: pointer; }
+    .med-btn.active { background: #0284c7; color: #fff; }
+
+    /* Classes */
+    .class-card { background: #0b1325; border: 1px solid #1e293b; border-radius: 14px; padding: 12px; margin-bottom: 16px; }
+    .class-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 700; }
+    .rgb-badge { font-size: 10px; border: 1px solid #334155; padding: 2px 6px; border-radius: 4px; color: #94a3b8; }
+    .grid-classes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .cls-btn { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px 4px; text-align: center; cursor: pointer; }
+    .cls-btn:active { background: #1e293b; border-color: #38bdf8; }
+    .cls-btn .t1 { font-size: 9px; color: #94a3b8; }
+    .cls-btn .num { font-size: 17px; font-weight: 800; color: #fff; margin: 1px 0; }
+    .cls-btn .t2 { font-size: 10px; color: #64748b; }
+
+    /* Views */
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back { background: #1e293b; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+    /* Lists */
+    .item-row { background: #0f172a; border: 1px solid #1e293b; padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .item-special { border-color: #0284c7; background: #0c1c38; }
+    .item-row h4 { font-size: 14px; margin-bottom: 2px; }
+    .item-row p { font-size: 11px; color: #94a3b8; }
+
+    /* PDF Card */
+    .pdf-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+    .badge { background: #0284c7; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-bottom: 6px; display: inline-block; }
+    .action-row { display: flex; gap: 8px; margin-top: 10px; }
+    .act-btn { flex: 1; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-align: center; }
+    .act-view { background: #0284c7; color: #fff; }
+    .act-dl { background: #1e293b; color: #fff; text-decoration: none; display: inline-block; }
+    .act-off { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+    /* Admin Action Controls */
+    .adm-controls { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b; }
+    .adm-stop { background: #d97706; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
+    .adm-del { background: #ef4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
+
+    /* Footer & Bottom Banner */
+    .footer-pill { text-align: center; margin-top: 20px; margin-bottom: 14px; }
+    .insta-link { display: inline-flex; align-items: center; gap: 6px; background: #0b1528; border: 1px solid #1e3a5f; color: #38bdf8; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    
+    .bottom-banner-box { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 8px; margin-bottom: 25px; border: 1px solid #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background: #0f172a; min-height: 140px; }
+    .bottom-banner-box img { width: 100%; height: auto; display: block; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      ConceptClear
-      <span>(कॉन्सेप्ट क्लियर)</span>
+  <!-- Top Header -->
+  <div class="top-bar">
+    <div>
+      <div class="brand-title">ConceptClear</div>
+      <div class="brand-sub" id="txtSub">(कॉन्सेप्ट क्लियर)</div>
     </div>
-    <div class="header-right">
-      <select class="lang-dropdown">
-        <option>हिंदी (Hindi)</option>
-        <option>English</option>
-      </select>
-      <button class="btn-teacher" id="loginBtn" onclick="openLogin()">प्रीमियम टीचर</button>
-      <button class="btn-logout" id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
-    </div>
-  </header>
-
-  <div class="teacher-bar" id="teacherBar">
-    <span style="font-size: 12px; font-weight: 600; color: #38bdf8;">Teacher Control Panel Active</span>
-    <button class="btn-teacher" onclick="openUpload()">+ Upload PDF</button>
-  </div>
-
-  <div class="container" id="mainView">
-    <div class="medium-toggle">
-      <button class="medium-btn active" id="btnHindi" onclick="setMedium('hindi')">हिंदी मीडियम</button>
-      <button class="medium-btn" id="btnEnglish" onclick="setMedium('english')">English Medium</button>
-    </div>
-
-    <img src="https://via.placeholder.com/600x280/0f172a/38bdf8?text=Concept+Clear+Banner" class="banner" alt="Banner">
-
-    <div class="section-header">
-      <span class="section-title">✨ Select Class (All Classes 6th - 12th)</span>
-      <span class="badge">RGB Edition</span>
-    </div>
-
-    <div class="class-grid">
-      <div class="class-card" onclick="openSubjects('Class 6')"><h4>CLASS</h4><div class="num">6</div><p>कक्षा 6th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 7')"><h4>CLASS</h4><div class="num">7</div><p>कक्षा 7th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 8')"><h4>CLASS</h4><div class="num">8</div><p>कक्षा 8th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 9')"><h4>CLASS</h4><div class="num">9</div><p>कक्षा 9th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 10')"><h4>CLASS</h4><div class="num">10</div><p>कक्षा 10th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 11')"><h4>CLASS</h4><div class="num">11</div><p>कक्षा 11th</p></div>
-      <div class="class-card" onclick="openSubjects('Class 12')"><h4>CLASS</h4><div class="num">12</div><p>कक्षा 12th</p></div>
-    </div>
-
-    <div class="telegram-btn">🔍 DIRECT STUDY SEARCH<br><b>@shivam_sahu_42</b></div>
-  </div>
-
-  <div class="container" id="subjectView" style="display:none;">
-    <button class="btn-back" onclick="backToHome()">← Back</button>
-    <div class="section-header">
-      <span class="section-title" id="subjectHeader"></span>
-    </div>
-    <div class="subject-card" onclick="openNotes('Mathematics')">📐 <div><b>Mathematics</b><br><small style="color:#64748b;">All Notes & Solutions</small></div></div>
-    <div class="subject-card" onclick="openNotes('Science')">🔬 <div><b>Science</b><br><small style="color:#64748b;">All Notes & Solutions</small></div></div>
-    <div class="subject-card" onclick="openNotes('English')">🔤 <div><b>English</b><br><small style="color:#64748b;">All Notes & Solutions</small></div></div>
-    <div class="subject-card" onclick="openNotes('Hindi')">📚 <div><b>Hindi</b><br><small style="color:#64748b;">All Notes & Solutions</small></div></div>
-  </div>
-
-  <div class="container" id="notesView" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <button class="btn-back" onclick="backToSubjects()">← Back</button>
-      <button class="btn-teacher" id="subUploadBtn" style="display:none;" onclick="openUpload()">+ PDF अपलोड करें</button>
-    </div>
-    <h3 id="notesHeader" style="margin-bottom: 12px; font-size:16px;"></h3>
-    <div id="notesContainer"></div>
-  </div>
-
-  <!-- Teacher Login Modal -->
-  <div class="modal" id="loginModal">
-    <div class="modal-box">
-      <h3>Premium Teacher Login</h3>
-      <p style="font-size:11px; color:#94a3b8; margin: 4px 0 10px 0;">Enter Secret Teacher Password:</p>
-      <input type="password" id="teacherPass" placeholder="Password दर्ज करें">
-      <button class="btn-teacher" style="width:100%; margin-top:8px; padding:10px;" onclick="checkLogin()">Login & Open Control Panel</button>
-      <button class="btn-back" style="width:100%; margin-top:6px; background:none; border:none;" onclick="closeModal('loginModal')">रद्द करें</button>
+    <div class="header-btns">
+      <button class="btn-top" onclick="switchLanguage()" id="txtLang">🌐 हिंदी (Hindi)</button>
+      <button class="btn-top btn-premium" onclick="clickLogin()" id="btnAuth">🔒 प्रीमियम टीचर</button>
     </div>
   </div>
 
-  <!-- Upload Modal -->
-  <div class="modal" id="uploadModal">
-    <div class="modal-box">
-      <h3>अपलोड स्टडी PDF</h3>
-      <input type="text" id="chapTitle" placeholder="चैप्टर का नाम (उदा. Chapter 1 - Real Numbers)">
-      <input type="text" id="chapDesc" placeholder="छोटा विवरण (उदा. Full notes with solution)">
-      <input type="file" id="chapFile">
-      <button class="btn-teacher" style="width:100%; margin-top:10px; padding:10px;" onclick="addNote()">+ वेबसाइट पर अपलोड करें</button>
-      <button class="btn-back" style="width:100%; margin-top:6px; background:none; border:none;" onclick="closeModal('uploadModal')">बंद करें</button>
+  <!-- Admin Bar (सिर्फ पासवर्ड डालने पर दिखेगा) -->
+  <div id="adminBar">
+    <span>🛡️ एडमिन एक्टिव</span>
+    <div class="adm-actions">
+      <button class="adm-btn adm-banner-btn" onclick="document.getElementById('bannerUploadInput').click()">+ बैनर जोड़ें</button>
+      <button class="adm-btn" onclick="addNewPdf()">+ PDF जोड़ें</button>
+      <button class="adm-btn adm-logout" onclick="logout()">लॉगआउट</button>
     </div>
+  </div>
+
+  <!-- गैलरी से बैनर उठाने के लिए इनपुट -->
+  <input type="file" id="bannerUploadInput" accept="image/*" style="display:none;" onchange="uploadBannerFile(event)">
+
+  <!-- फोन से सीधे PDF चुनने के लिए इनपुट -->
+  <input type="file" id="directPdfInput" accept="application/pdf" style="display:none;" onchange="uploadDirectPdf(event)">
+
+  <!-- 1. HOME SCREEN -->
+  <div id="viewHome" class="page-section active">
+    <div class="medium-box">
+      <button class="med-btn active" id="btnMedHi" onclick="setMed('hi')">हिंदी मीडियम</button>
+      <button class="med-btn" id="btnMedEn" onclick="setMed('en')">English Medium</button>
+    </div>
+
+    <!-- Class Grid -->
+    <div class="class-card">
+      <div class="class-card-header">
+        <span id="txtClsTitle">✨ कक्षा चुनें (All Classes 6th - 12th)</span>
+        <span class="rgb-badge">RGB Edition</span>
+      </div>
+      <div class="grid-classes">
+        <div class="cls-btn" onclick="selectClass('6')"><div class="t1">CLASS</div><div class="num">6</div><div class="t2">कक्षा 6th</div></div>
+        <div class="cls-btn" onclick="selectClass('7')"><div class="t1">CLASS</div><div class="num">7</div><div class="t2">कक्षा 7th</div></div>
+        <div class="cls-btn" onclick="selectClass('8')"><div class="t1">CLASS</div><div class="num">8</div><div class="t2">कक्षा 8th</div></div>
+        <div class="cls-btn" onclick="selectClass('9')"><div class="t1">CLASS</div><div class="num">9</div><div class="t2">कक्षा 9th</div></div>
+        <div class="cls-btn" onclick="selectClass('10')"><div class="t1">CLASS</div><div class="num">10</div><div class="t2">कक्षा 10th</div></div>
+        <div class="cls-btn" onclick="selectClass('11')"><div class="t1">CLASS</div><div class="num">11</div><div class="t2">कक्षा 11th</div></div>
+        <div class="cls-btn" onclick="selectClass('12')"><div class="t1">CLASS</div><div class="num">12</div><div class="t2">कक्षा 12th</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SUBJECTS SCREEN -->
+  <div id="viewSubjects" class="page-section">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goScreen('viewHome')">← Back</button>
+      <button class="adm-btn" id="admSubAdd" style="display:none;" onclick="addNewPdf()">+ PDF जोड़ें</button>
+    </div>
+    <h3 id="txtSubHeading" style="font-size: 15px; margin-bottom: 10px;">विषय सूची</h3>
+    <div id="subjectBox"></div>
+  </div>
+
+  <!-- 3. PDF SCREEN -->
+  <div id="viewPdf" class="page-section">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goScreen('viewSubjects')">← Back</button>
+      <button class="adm-btn" id="admPdfAdd" style="display:none;" onclick="addNewPdf()">+ इस सेक्शन में PDF जोड़ें</button>
+    </div>
+    <h3 id="txtPdfHeading" style="font-size: 15px; margin-bottom: 10px;">अध्ययन सामग्री</h3>
+    <div id="pdfListBox"></div>
+  </div>
+
+  <!-- DIRECT STUDY SEARCH FOOTER -->
+  <div class="footer-pill">
+    <div class="insta-link" onclick="clickInsta()">
+      <span>🔍 DIRECT STUDY SEARCH</span>
+      <span id="txtInstaId">@shivam_sahu_42</span>
+      <span id="icoInstaEdit" style="display:none;">✏️</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM BANNER SECTION -->
+  <div class="bottom-banner-box">
+    <img id="imgBanner" src="1000084603.jpg" alt="ConceptClear Banner" onerror="this.src='https://via.placeholder.com/600x320?text=ConceptClear+Banner'">
   </div>
 
   <script>
-    let isTeacher = false;
-    let selectedClass = '';
-    let selectedSubject = '';
-    let currentMedium = 'hindi';
+    var currentClass = '6';
+    var currentSection = 'Important Questions';
+    var currentLang = 'hi';
+    var isTeacher = false;
 
-    let notesList = [
-      { id: 1, class: 'Class 6', subject: 'Mathematics', title: 'Chapter 1 - Knowing Our Numbers', desc: 'Complete Notes, Formulas and Solutions', url: '#' }
-    ];
-
-    function setMedium(med) {
-      currentMedium = med;
-      document.getElementById('btnHindi').classList.toggle('active', med === 'hindi');
-      document.getElementById('btnEnglish').classList.toggle('active', med === 'english');
+    // Local Storage से सेव्ड बैनर लोड करना
+    var savedBanner = localStorage.getItem('cc_custom_banner');
+    if (savedBanner) {
+      document.getElementById('imgBanner').src = savedBanner;
     }
 
-    function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-    function openUpload() { document.getElementById('uploadModal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    // Local Storage से सेव्ड PDF डेटा लोड करना
+    var savedDb = localStorage.getItem('cc_study_db');
+    var db = savedDb ? JSON.parse(savedDb) : {
+      '6': {
+        'Model Paper': [{ id: 1, title: 'Class 6 - Model Paper 2026', desc: 'Sample Papers & Solutions', url: '', stop: false }],
+        'Important Questions': [{ id: 2, title: 'Class 6 - Important Questions', desc: 'Exam Special Questions', url: '', stop: false }],
+        'Mathematics': [{ id: 3, title: 'Chapter 1 - Knowing Our Numbers', desc: 'Full Formulas & Notes', url: '', stop: false }]
+      }
+    };
 
-    function checkLogin() {
-      const pass = document.getElementById('teacherPass').value;
-      if(pass === "1234") { // पासवर्ड यहां बदल सकते हैं
-        isTeacher = true;
-        document.getElementById('teacherBar').style.display = 'flex';
-        document.getElementById('subUploadBtn').style.display = 'block';
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'block';
-        closeModal('loginModal');
-        alert("Login Successful!");
-        renderNotes();
+    function saveToLocal() {
+      try {
+        localStorage.setItem('cc_study_db', JSON.stringify(db));
+      } catch (e) {
+        console.warn('Local storage size limit exceeded or private browsing mode.');
+      }
+    }
+
+    function goScreen(id) {
+      document.getElementById('viewHome').className = 'page-section';
+      document.getElementById('viewSubjects').className = 'page-section';
+      document.getElementById('viewPdf').className = 'page-section';
+      document.getElementById(id).className = 'page-section active';
+    }
+
+    function selectClass(cls) {
+      currentClass = cls;
+      buildSubjects();
+      goScreen('viewSubjects');
+    }
+
+    function selectSection(sec) {
+      currentSection = sec;
+      document.getElementById('txtPdfHeading').innerText = 'Class ' + currentClass + 'th • ' + sec;
+      buildPdfList();
+      goScreen('viewPdf');
+    }
+
+    function buildSubjects() {
+      var isHi = currentLang === 'hi';
+      document.getElementById('txtSubHeading').innerText = (isHi ? 'कक्षा ' : 'Class ') + currentClass + 'th • ' + (isHi ? 'विषय चुनें' : 'Select Subject');
+
+      var list = [
+        { name: 'Model Paper', desc: isHi ? 'सभी विषयों के मॉडल पेपर' : 'All subjects model papers', icon: '📝', special: true },
+        { name: 'Important Questions', desc: isHi ? 'परीक्षा उपयोगी महत्वपूर्ण प्रश्न' : 'High scoring questions', icon: '⭐', special: true },
+        { name: isHi ? 'गणित (Mathematics)' : 'Mathematics', raw: 'Mathematics', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '📐' },
+        { name: isHi ? 'विज्ञान (Science)' : 'Science', raw: 'Science', desc: isHi ? 'सभी नोट्स और हल' : 'Notes & Solutions', icon: '🔬' },
+        { name: isHi ? 'अंग्रेजी (English)' : 'English', raw: 'English', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '🔤' },
+        { name: isHi ? 'हिंदी (Hindi)' : 'Hindi', raw: 'Hindi', desc: isHi ? 'व्याकरण और पाठ' : 'Grammar & Text', icon: '📚' }
+      ];
+
+      var box = document.getElementById('subjectBox');
+      box.innerHTML = '';
+      for (var i = 0; i < list.length; i++) {
+        var it = list[i];
+        var d = document.createElement('div');
+        d.className = 'item-row' + (it.special ? ' item-special' : '');
+        var key = it.raw || it.name;
+        d.setAttribute('onclick', "selectSection('" + key + "')");
+        d.innerHTML = '<span style="font-size:20px;">' + it.icon + '</span><div><h4>' + it.name + '</h4><p>' + it.desc + '</p></div>';
+        box.appendChild(d);
+      }
+    }
+
+    function buildPdfList() {
+      var box = document.getElementById('pdfListBox');
+      box.innerHTML = '';
+
+      if (!db[currentClass]) db[currentClass] = {};
+      if (!db[currentClass][currentSection]) db[currentSection] = [];
+      var items = db[currentClass][currentSection] || [];
+
+      if (items.length === 0) {
+        box.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8; font-size:13px;">No PDF available here yet.</div>';
+        return;
+      }
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var d = document.createElement('div');
+        d.className = 'pdf-box';
+
+        var dlBtn = item.stop
+          ? '<button class="act-btn act-off">⛔ Download Stopped</button>'
+          : '<a class="act-btn act-dl" href="' + (item.url || '#') + '" download="' + item.title + '.pdf" onclick="handleDl(event, \'' + item.url + '\')">⬇ Download PDF</a>';
+
+        var admBtns = isTeacher
+          ? '<div class="adm-controls">' +
+              '<button class="adm-stop" onclick="toggleStop(' + item.id + ')">' + (item.stop ? '🟢 Resume' : '🔴 Stop Download') + '</button>' +
+              '<button class="adm-del" onclick="delPdf(' + item.id + ')">🗑️ Delete</button>' +
+            '</div>'
+          : '';
+
+        d.innerHTML = '<span class="badge">' + currentSection + '</span>' +
+          '<h4>' + item.title + '</h4>' +
+          '<p style="font-size:12px; color:#94a3b8; margin:2px 0 8px;">' + item.desc + '</p>' +
+          '<div class="action-row">' +
+            '<button class="act-btn act-view" onclick="doView(\'' + item.url + '\')">👁 View & Zoom</button>' +
+            dlBtn +
+          '</div>' + admBtns;
+
+        box.appendChild(d);
+      }
+    }
+
+    function doView(url) {
+      if (url) {
+        var win = window.open();
+        win.document.write('<title>PDF Viewer</title><body style="margin:0; background:#000;"><iframe src="' + url + '" frameborder="0" style="border:none; width:100vw; height:100vh;"></iframe></body>');
       } else {
-        alert("गलत पासवर्ड!");
+        alert('PDF Viewer: जल्द लिंक किया जाएगा!');
+      }
+    }
+
+    function handleDl(e, url) {
+      if (!url) {
+        e.preventDefault();
+        alert('डाउनलोड शुरू हो रहा है...');
+      }
+    }
+
+    function toggleStop(id) {
+      var list = db[currentClass][currentSection];
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].id === id) {
+          list[i].stop = !list[i].stop;
+          break;
+        }
+      }
+      saveToLocal();
+      buildPdfList();
+    }
+
+    function delPdf(id) {
+      if (confirm('क्या आप इसे हटाना चाहते हैं?')) {
+        db[currentClass][currentSection] = db[currentClass][currentSection].filter(function(x) { return x.id !== id; });
+        saveToLocal();
+        buildPdfList();
+      }
+    }
+
+    function clickLogin() {
+      if (isTeacher) {
+        logout();
+        return;
+      }
+      var p = prompt('प्रीमियम टीचर पासवर्ड दर्ज करें:');
+      if (p === 'shivam@2008') {
+        isTeacher = true;
+        updateAdminState();
+        alert('लॉगिन सफल! एडमिन कंट्रोल चालू हो गया है।');
+      } else if (p !== null) {
+        alert('गलत पासवर्ड!');
       }
     }
 
     function logout() {
       isTeacher = false;
-      document.getElementById('teacherBar').style.display = 'none';
-      document.getElementById('subUploadBtn').style.display = 'none';
-      document.getElementById('loginBtn').style.display = 'block';
-      document.getElementById('logoutBtn').style.display = 'none';
-      renderNotes();
+      updateAdminState();
+      alert('लॉगआउट सफल!');
     }
 
-    function openSubjects(cls) {
-      selectedClass = cls;
-      document.getElementById('mainView').style.display = 'none';
-      document.getElementById('subjectView').style.display = 'block';
-      document.getElementById('subjectHeader').innerText = cls + ' • Select Subject';
+    function updateAdminState() {
+      document.getElementById('adminBar').style.display = isTeacher ? 'flex' : 'none';
+      document.getElementById('icoInstaEdit').style.display = isTeacher ? 'inline' : 'none';
+      document.getElementById('admSubAdd').style.display = isTeacher ? 'block' : 'none';
+      document.getElementById('admPdfAdd').style.display = isTeacher ? 'block' : 'none';
+      document.getElementById('btnAuth').innerText = isTeacher ? '🛡️ एडमिन मोड' : '🔒 प्रीमियम टीचर';
+      if (document.getElementById('viewPdf').classList.contains('active')) buildPdfList();
     }
 
-    function backToHome() {
-      document.getElementById('subjectView').style.display = 'none';
-      document.getElementById('mainView').style.display = 'block';
-    }
-
-    function openNotes(sub) {
-      selectedSubject = sub;
-      document.getElementById('subjectView').style.display = 'none';
-      document.getElementById('notesView').style.display = 'block';
-      document.getElementById('notesHeader').innerText = selectedClass + ' • ' + sub;
-      renderNotes();
-    }
-
-    function backToSubjects() {
-      document.getElementById('notesView').style.display = 'none';
-      document.getElementById('subjectView').style.display = 'block';
-    }
-
-    function toggleMenu(id) {
-      const menu = document.getElementById('menu-' + id);
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function renderNotes() {
-      const filtered = notesList.filter(n => n.class === selectedClass && n.subject === selectedSubject);
-      const container = document.getElementById('notesContainer');
-      container.innerHTML = '';
-
-      if(filtered.length === 0) {
-        container.innerHTML = '<p style="color:#64748b; text-align:center; padding: 20px;">No PDF available for this subject yet.</p>';
-        return;
+    function uploadBannerFile(event) {
+      var file = event.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var imgData = e.target.result;
+          document.getElementById('imgBanner').src = imgData;
+          localStorage.setItem('cc_custom_banner', imgData);
+          alert('नया बैनर सफलतापूर्वक अपलोड और सेव हो गया!');
+        };
+        reader.readAsDataURL(file);
       }
-
-      filtered.forEach(note => {
-        const div = document.createElement('div');
-        div.className = 'note-card';
-        div.innerHTML = `
-          <span class="note-tag">Regular Notes</span>
-          ${isTeacher ? `<button class="btn-menu" onclick="toggleMenu(${note.id})">⋮</button>
-          <div class="menu-popup" id="menu-${note.id}">
-            <button onclick="deleteNote(${note.id})" style="color:#ef4444;">🗑 Delete PDF</button>
-          </div>` : ''}
-          <div class="note-title">${note.title}</div>
-          <div class="note-desc">${note.desc}</div>
-          <div class="note-actions">
-            <button class="btn-action btn-view" onclick="alert('Viewing: ${note.title}')">👁 View & Zoom</button>
-            <a href="${note.url}" download class="btn-action btn-download">⤓ Download PDF</a>
-          </div>
-        `;
-        container.appendChild(div);
-      });
     }
 
-    function addNote() {
-      const title = document.getElementById('chapTitle').value;
-      const desc = document.getElementById('chapDesc').value;
-      if(!title) return;
-      notesList.push({
-        id: Date.now(),
-        class: selectedClass,
-        subject: selectedSubject,
-        title: title,
-        desc: desc || 'Notes and Solutions',
-        url: '#'
-      });
-      document.getElementById('chapTitle').value = '';
-      document.getElementById('chapDesc').value = '';
-      closeModal('uploadModal');
-      renderNotes();
-    }
-
-    function deleteNote(id) {
-      if(confirm("क्या आप वाकई इस PDF को डिलीट करना चाहते हैं?")) {
-        notesList = notesList.filter(n => n.id !== id);
-        renderNotes();
+    function clickInsta() {
+      if (isTeacher) {
+        var id = prompt('नया इंस्टाग्राम ID दर्ज करें:', document.getElementById('txtInstaId').innerText);
+        if (id) document.getElementById('txtInstaId').innerText = id;
+      } else {
+        var u = document.getElementById('txtInstaId').innerText.replace('@', '');
+        window.open('https://instagram.com/' + u, '_blank');
       }
+    }
+
+    // सीधे फोन के मीडिया पिकर को खोलना
+    function addNewPdf() {
+      document.getElementById('directPdfInput').click();
+    }
+
+    // फोन से PDF चुनने के बाद का प्रोसेस
+    function uploadDirectPdf(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      var defaultTitle = file.name.replace(/\.pdf$/i, '');
+      var title = prompt('PDF का शीर्षक (Title) लिखें या ठीक रहने दें:', defaultTitle);
+      if (!title) return;
+
+      var desc = prompt('विवरण (Description):', 'Complete study notes') || 'Notes';
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var pdfDataUrl = e.target.result;
+
+        if (!db[currentClass]) db[currentClass] = {};
+        if (!db[currentClass][currentSection]) db[currentClass][currentSection] = [];
+
+        db[currentClass][currentSection].push({
+          id: Date.now(),
+          title: title,
+          desc: desc,
+          url: pdfDataUrl,
+          stop: false
+        });
+
+        saveToLocal();
+        buildPdfList();
+        alert('PDF फाइल फोन से सफलतापूर्वक जोड़ दी गई!');
+        document.getElementById('directPdfInput').value = ""; // रीसेट
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setMed(m) {
+      currentLang = m;
+      document.getElementById('btnMedHi').className = 'med-btn' + (m === 'hi' ? ' active' : '');
+      document.getElementById('btnMedEn').className = 'med-btn' + (m === 'en' ? ' active' : '');
+      var isHi = m === 'hi';
+      document.getElementById('txtSub').innerText = isHi ? '(कॉन्सेप्ट क्लियर)' : '(Concept Clear)';
+      document.getElementById('txtLang').innerText = isHi ? '🌐 हिंदी (Hindi)' : '🌐 English';
+      document.getElementById('txtClsTitle').innerText = isHi ? '✨ कक्षा चुनें (All Classes 6th - 12th)' : '✨ Select Class (All Classes 6th - 12th)';
+      if (document.getElementById('viewSubjects').classList.contains('active')) buildSubjects();
+    }
+
+    function switchLanguage() {
+      setMed(currentLang === 'hi' ? 'en' : 'hi');
     }
   </script>
 </body>
 </html>
+  
