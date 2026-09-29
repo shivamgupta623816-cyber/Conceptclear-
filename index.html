@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConceptClear - स्टडी पोर्टल</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background: #070b14; color: #f8fafc; padding: 12px; max-width: 480px; margin: 0 auto; min-height: 100vh; }
     
-    /* Header */
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .brand-title { font-size: 20px; font-weight: 800; color: #38bdf8; }
     .brand-sub { font-size: 11px; color: #94a3b8; }
@@ -17,7 +21,6 @@
     .btn-top { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1px solid #1e293b; background: #131d31; color: #fff; }
     .btn-premium { background: #0284c7; border: none; }
 
-    /* Admin Bar (सिर्फ टीचर को दिखेगा) */
     #adminBar { display: none; background: #064e3b; border: 1px solid #059669; border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; justify-content: space-between; align-items: center; }
     #adminBar span { font-size: 11px; font-weight: 700; color: #a7f3d0; }
     .adm-actions { display: flex; gap: 5px; }
@@ -25,12 +28,10 @@
     .adm-banner-btn { background: #0d9488; }
     .adm-logout { background: #ef4444; }
 
-    /* Medium Toggle */
     .medium-box { display: flex; background: #0d1527; padding: 4px; border-radius: 10px; border: 1px solid #1e293b; margin-bottom: 14px; }
     .med-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #94a3b8; font-weight: 700; font-size: 13px; border-radius: 6px; cursor: pointer; }
     .med-btn.active { background: #0284c7; color: #fff; }
 
-    /* Classes */
     .class-card { background: #0b1325; border: 1px solid #1e293b; border-radius: 14px; padding: 12px; margin-bottom: 16px; }
     .class-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; font-weight: 700; }
     .rgb-badge { font-size: 10px; border: 1px solid #334155; padding: 2px 6px; border-radius: 4px; color: #94a3b8; }
@@ -41,22 +42,18 @@
     .cls-btn .num { font-size: 17px; font-weight: 800; color: #fff; margin: 1px 0; }
     .cls-btn .t2 { font-size: 10px; color: #64748b; }
 
-    /* Views */
     .page-section { display: none; }
     .page-section.active { display: block; }
     .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .btn-back { background: #1e293b; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
-    /* Lists */
     .item-row { background: #0f172a; border: 1px solid #1e293b; padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .item-special { border-color: #0284c7; background: #0c1c38; }
     .item-row h4 { font-size: 14px; margin-bottom: 2px; }
     .item-row p { font-size: 11px; color: #94a3b8; }
 
-    /* Section Headings */
     .section-title { font-size: 14px; font-weight: 800; color: #38bdf8; margin: 15px 0 10px; display: flex; justify-content: space-between; align-items: center; }
 
-    /* PDF Card */
     .pdf-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
     .badge { background: #0284c7; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-bottom: 6px; display: inline-block; }
     .cls-badge { background: #334155; color: #38bdf8; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; }
@@ -66,22 +63,18 @@
     .act-dl { background: #1e293b; color: #fff; }
     .act-off { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-    /* Admin Action Controls */
     .adm-controls { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #1e293b; }
     .adm-stop { background: #d97706; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
     .adm-del { background: #ef4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
 
-    /* Modal / Popup for Upload */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
-    .modal-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; width: 100%; max-width: 420px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
+    .modal-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; width: 100%; max-width: 420px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     .modal-box h3 { font-size: 16px; margin-bottom: 12px; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; }
     .modal-close { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
     .form-group { margin-top: 10px; }
     .form-group label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px; }
     .form-group input, .form-group select { width: 100%; padding: 9px 10px; border-radius: 6px; background: #070b14; border: 1px solid #1e293b; color: #fff; font-size: 13px; outline: none; }
-    .form-group input:focus, .form-group select:focus { border-color: #38bdf8; }
 
-    /* Footer & Bottom Banner */
     .footer-pill { text-align: center; margin-top: 20px; margin-bottom: 14px; }
     .insta-link { display: inline-flex; align-items: center; gap: 6px; background: #0b1528; border: 1px solid #1e3a5f; color: #38bdf8; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .bottom-banner-box { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 8px; margin-bottom: 25px; border: 1px solid #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background: #0f172a; min-height: 140px; }
@@ -90,7 +83,6 @@
 </head>
 <body>
 
-  <!-- Top Header -->
   <div class="top-bar">
     <div>
       <div class="brand-title">ConceptClear</div>
@@ -102,27 +94,22 @@
     </div>
   </div>
 
-  <!-- Admin Bar (केवल टीचर लॉगिन पर सक्रिय) -->
   <div id="adminBar">
     <span>🛡️ एडमिन एक्टिव</span>
     <div class="adm-actions">
-      <button class="adm-btn adm-banner-btn" onclick="document.getElementById('bannerUploadInput').click()">+ बैनर बदलें</button>
+      <button class="adm-btn adm-banner-btn" onclick="openBannerPrompt()">+ बैनर बदलें</button>
       <button class="adm-btn" onclick="openUploadModal()">+ PDF जोड़ें</button>
       <button class="adm-btn adm-logout" onclick="logout()">लॉगआउट</button>
     </div>
   </div>
 
-  <input type="file" id="bannerUploadInput" accept="image/*" style="display:none;" onchange="uploadBannerFile(event)">
-  <input type="file" id="directPdfInput" accept="application/pdf" style="display:none;" onchange="uploadLocalPdfFile(event)">
-
-  <!-- 1. HOME SCREEN (सभी के लिए सार्वजनिक) -->
+  <!-- 1. HOME SCREEN (सार्वजनिक) -->
   <div id="viewHome" class="page-section active">
     <div class="medium-box">
       <button class="med-btn active" id="btnMedHi" onclick="setMed('hi')">हिंदी मीडियम</button>
       <button class="med-btn" id="btnMedEn" onclick="setMed('en')">English Medium</button>
     </div>
 
-    <!-- Class Grid -->
     <div class="class-card">
       <div class="class-card-header">
         <span id="txtClsTitle">✨ कक्षा चुनें (All Classes 6th - 12th)</span>
@@ -139,10 +126,10 @@
       </div>
     </div>
 
-    <!-- 🔥 सार्वजनिक नोट्स सेक्शन (सभी छात्रों को होम पेज पर दिखेगा) -->
+    <!-- सार्वजनिक नवीनतम नोट्स (सभी छात्रों को होम स्क्रीन पर दिखेंगे) -->
     <div class="section-title">
-      <span>📚 सभी नए नोट्स (Latest Public Notes)</span>
-      <span style="font-size:11px; color:#10b981;">● लाइव</span>
+      <span>📚 सभी नए नोट्स (All Public Notes)</span>
+      <span style="font-size:11px; color:#10b981;">● लाइव सिंक</span>
     </div>
     <div id="homeRecentPdfs"></div>
   </div>
@@ -167,11 +154,11 @@
     <div id="pdfListBox"></div>
   </div>
 
-  <!-- PDF अपलोड मॉडल (क्लास और विषय चुनने की सुविधा के साथ) -->
+  <!-- Upload Modal -->
   <div class="modal-overlay" id="uploadModal">
     <div class="modal-box">
       <h3>
-        <span>📁 नई PDF अपलोड करें</span>
+        <span>📁 नई PDF लाइव जोड़ें</span>
         <button class="modal-close" onclick="closeUploadModal()">&times;</button>
       </h3>
       
@@ -189,7 +176,7 @@
       </div>
 
       <div class="form-group">
-        <label>विषय / सेक्शन चुनें (Subject):</label>
+        <label>विषय (Subject):</label>
         <select id="modalSectionSelect">
           <option value="Model Paper">Model Paper</option>
           <option value="Important Questions">Important Questions</option>
@@ -201,23 +188,19 @@
       </div>
 
       <div class="form-group">
-        <label>PDF का शीर्षक (Title):</label>
-        <input type="text" id="driveTitle" placeholder="जैसे: Chapter 1 Real Numbers Notes">
+        <label>PDF शीर्षक (Title):</label>
+        <input type="text" id="driveTitle" placeholder="जैसे: Chapter 1 Full Notes">
       </div>
 
       <div class="form-group">
-        <label>Google Drive लिंक (पूरी दुनिया के लिए सबसे बेहतर):</label>
+        <label>Google Drive लिंक (Anyone with link):</label>
         <input type="text" id="driveUrl" placeholder="https://drive.google.com/file/d/...">
       </div>
 
-      <button class="adm-btn" style="width:100%; margin-top:12px; padding:10px; font-size:13px;" onclick="saveDrivePdf()">🌍 सार्वजनिक करें (Publish PDF)</button>
-      
-      <div style="text-align:center; margin:10px 0; font-size:11px; color:#64748b;">— या फ़ोन स्टोरेज से चुनें —</div>
-      <button class="btn-top" style="width:100%; padding:8px;" onclick="chooseLocalPdf()">📱 सीधे फ़ोन से चुनें</button>
+      <button class="adm-btn" style="width:100%; margin-top:14px; padding:10px; font-size:13px;" onclick="saveDrivePdf()">🌍 पूरी दुनिया के लिए लाइव करें</button>
     </div>
   </div>
 
-  <!-- DIRECT STUDY SEARCH FOOTER -->
   <div class="footer-pill">
     <div class="insta-link" onclick="clickInsta()">
       <span>🔍 DIRECT STUDY SEARCH</span>
@@ -226,62 +209,50 @@
     </div>
   </div>
 
-  <!-- BOTTOM BANNER SECTION (सार्वजनिक) -->
   <div class="bottom-banner-box">
     <img id="imgBanner" src="1000084603.jpg" alt="ConceptClear Banner" onerror="this.src='https://via.placeholder.com/600x320?text=ConceptClear+Banner'">
   </div>
   <script>
-    // ऑटोमैटिक ऑनलाइन डेटा सिंक (बिना किसी सेटिंग के सभी फोन पर लाइव देखने के लिए)
-    const CLOUD_SYNC_URL = "https://kvdb.io/4y9eUq2Vp8w3Y9x_cc/study_data";
+    // 🔥 आपका बिल्कुल सही डेटाबेस लिंक ऑटोमैटिक कनेक्टेड
+    const firebaseConfig = {
+      databaseURL: "https://conceptclear1111-default-rtdb.firebaseio.com"
+    };
+
+    var liveDB = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      liveDB = firebase.database();
+    } catch(e) {
+      console.log("Firebase Init Error:", e);
+    }
 
     var currentClass = '6';
     var currentSection = 'Important Questions';
     var currentLang = 'hi';
     var isTeacher = false;
+    var db = {};
 
-    var db = {
-      '6': {
-        'Model Paper': [{ id: 1, title: 'Class 6 - Model Paper 2026', desc: 'Sample Papers & Solutions', url: '', stop: false, cls: '6' }],
-        'Important Questions': [{ id: 2, title: 'Class 6 - Important Questions', desc: 'Exam Special Questions', url: '', stop: false, cls: '6' }],
-        'Mathematics': [{ id: 3, title: 'Chapter 1 - Knowing Our Numbers', desc: 'Full Formulas & Notes', url: '', stop: false, cls: '6' }]
-      }
-    };
+    // 1. लाइव डेटाबेस लिसनर (दुनिया के हर फोन पर 1 सेकंड में सिंक होगा)
+    if (liveDB) {
+      // नोट्स सुनना
+      liveDB.ref('study_data').on('value', function(snapshot) {
+        var val = snapshot.val();
+        db = val || {};
+        renderAllViews();
+      });
 
-    // 1. क्लाउड से लाइव डेटा लोड करना (ताकि हर छात्र को तुरंत दिखे)
-    function fetchGlobalData() {
-      fetch(CLOUD_SYNC_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.db) {
-            db = data.db;
-            if (data.banner) document.getElementById('imgBanner').src = data.banner;
-            renderAllViews();
-          }
-        })
-        .catch(err => {
-          var saved = localStorage.getItem('cc_study_db');
-          if (saved) db = JSON.parse(saved);
-          var b = localStorage.getItem('cc_custom_banner');
-          if (b) document.getElementById('imgBanner').src = b;
-          renderAllViews();
-        });
+      // बैनर सुनना
+      liveDB.ref('study_banner').on('value', function(snapshot) {
+        var b = snapshot.val();
+        if (b) document.getElementById('imgBanner').src = b;
+      });
+
+      // इंस्टाग्राम आईडी सुनना
+      liveDB.ref('study_insta').on('value', function(snapshot) {
+        var insta = snapshot.val();
+        if (insta) document.getElementById('txtInstaId').innerText = insta;
+      });
     }
-
-    // 2. जब टीचर कुछ भी बदले, तो पूरे विश्व में सिंक करना
-    function saveGlobalData() {
-      localStorage.setItem('cc_study_db', JSON.stringify(db));
-      fetch(CLOUD_SYNC_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          db: db,
-          banner: document.getElementById('imgBanner').src
-        })
-      }).catch(e => console.log('Syncing...'));
-      renderAllViews();
-    }
-
-    fetchGlobalData();
 
     function renderAllViews() {
       buildHomeRecentList();
@@ -335,7 +306,6 @@
       }
     }
 
-    // होम पेज पर सभी सार्वजनिक नोट्स दिखाना
     function buildHomeRecentList() {
       var box = document.getElementById('homeRecentPdfs');
       box.innerHTML = '';
@@ -354,26 +324,21 @@
       }
 
       if (allPdfs.length === 0) {
-        box.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">कोई नोट्स उपलब्ध नहीं हैं।</div>';
+        box.innerHTML = '<div style="text-align:center; padding:25px; color:#94a3b8; font-size:12px;">अभी कोई नोट्स उपलब्ध नहीं हैं।</div>';
         return;
       }
 
-      // नवीनतम नोट्स ऊपर
       allPdfs.reverse();
-
       for (var i = 0; i < allPdfs.length; i++) {
-        var item = allPdfs[i];
-        box.appendChild(createPdfElement(item));
+        box.appendChild(createPdfElement(allPdfs[i]));
       }
     }
 
-    // सब्जेक्ट के अंदर की लिस्ट
     function buildPdfList() {
       var box = document.getElementById('pdfListBox');
       box.innerHTML = '';
 
       if (!db[currentClass]) db[currentClass] = {};
-      if (!db[currentClass][currentSection]) db[currentClass][currentSection] = [];
       var items = db[currentClass][currentSection] || [];
 
       if (items.length === 0) {
@@ -389,16 +354,14 @@
       }
     }
 
-    // PDF कार्ड बनाना (सभी के लिए व्यू और डाउनलोड हमेशा खुला रहेगा)
     function createPdfElement(item) {
       var d = document.createElement('div');
       d.className = 'pdf-box';
 
       var dlBtn = item.stop
         ? '<button class="act-btn act-off">⛔ Download Stopped</button>'
-        : '<button class="act-btn act-dl" onclick="doDl(' + item.id + ')">⬇ Download PDF</button>';
+        : '<button class="act-btn act-dl" onclick="doDl(\'' + item.url + '\')">⬇ Download PDF</button>';
 
-      // केवल प्रीमियम टीचर को स्टॉप और डिलीट बटन दिखेगा
       var admBtns = isTeacher
         ? '<div class="adm-controls">' +
             '<button class="adm-stop" onclick="toggleStop(' + item.id + ')">' + (item.stop ? '🟢 Resume' : '🔴 Stop Download') + '</button>' +
@@ -411,9 +374,8 @@
           '<span class="cls-badge">Class ' + (item.clsName || '6') + 'th</span>' +
         '</div>' +
         '<h4>' + item.title + '</h4>' +
-        '<p style="font-size:12px; color:#94a3b8; margin:2px 0 8px;">' + (item.desc || 'Complete study material') + '</p>' +
         '<div class="action-row">' +
-          '<button class="act-btn act-view" onclick="doView(' + item.id + ')">👁 View & Zoom</button>' +
+          '<button class="act-btn act-view" onclick="doView(\'' + item.url + '\')">👁 View & Zoom</button>' +
           dlBtn +
         '</div>' + admBtns;
 
@@ -429,90 +391,51 @@
       return null;
     }
 
-    // सार्वजनिक व्यू (कोई भी देख सकता है)
-    function doView(id) {
-      var item = findItemById(id);
-      if (!item || !item.url) {
-        alert('PDF लिंक उपलब्ध नहीं है!');
-        return;
-      }
-      var driveId = extractDriveId(item.url);
+    function doView(url) {
+      var driveId = extractDriveId(url);
       if (driveId) {
         window.open('https://drive.google.com/file/d/' + driveId + '/preview', '_blank');
-      } else if (item.url.startsWith('data:application/pdf')) {
-        var blob = dataURItoBlob(item.url);
-        window.open(URL.createObjectURL(blob), '_blank');
       } else {
-        window.open(item.url, '_blank');
+        window.open(url, '_blank');
       }
     }
 
-    // सार्वजनिक डाउनलोड (कोई भी डाउनलोड कर सकता है)
-    function doDl(id) {
-      var item = findItemById(id);
-      if (!item || !item.url) {
-        alert('डाउनलोड लिंक उपलब्ध नहीं है!');
-        return;
-      }
-      var driveId = extractDriveId(item.url);
+    function doDl(url) {
+      var driveId = extractDriveId(url);
       if (driveId) {
         window.open('https://drive.google.com/file/d/' + driveId + '/view', '_blank');
-      } else if (item.url.startsWith('data:application/pdf')) {
-        var blob = dataURItoBlob(item.url);
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = (item.title || 'study_notes') + '.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
       } else {
-        window.open(item.url, '_blank');
+        window.open(url, '_blank');
       }
     }
 
-    function dataURItoBlob(dataURI) {
-      var byteString = atob(dataURI.split(',')[1]);
-      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-      var ab = new ArrayBuffer(byteString.length);
-      var ia = new Uint8Array(ab);
-      for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      return new Blob([ab], { type: mimeString });
-    }
-
-    function findItemById(id) {
+    // डाउनलोड रोकना (सभी फ़ोन पर तुरंत बंद होगा)
+    function toggleStop(id) {
       for (var c in db) {
         for (var s in db[c]) {
           var arr = db[c][s] || [];
           for (var i = 0; i < arr.length; i++) {
-            if (arr[i].id === id) return arr[i];
+            if (arr[i].id === id) {
+              arr[i].stop = !arr[i].stop;
+              if (liveDB) liveDB.ref('study_data').set(db);
+              alert('डाउनलोड स्टेटस पूरी दुनिया के लिए बदल गया!');
+              return;
+            }
           }
         }
       }
-      return null;
     }
 
-    // डाउनलोड रोकना/चालू करना (केवल टीचर)
-    function toggleStop(id) {
-      var item = findItemById(id);
-      if (item) {
-        item.stop = !item.stop;
-        saveGlobalData();
-        alert('डाउनलोड स्टेटस सभी के लिए अपडेट हो गया!');
-      }
-    }
-
-    // डिलीट करना (केवल टीचर)
+    // डिलीट करना (सभी फ़ोन से तुरंत हट जाएगा)
     function delPdf(id) {
-      if (confirm('क्या आप इसे पूरे पोर्टल से हटाना चाहते हैं?')) {
+      if (confirm('क्या आप इसे हमेशा के लिए हटाना चाहते हैं? यह सभी छात्रों के फोन से तुरंत हट जाएगा।')) {
         for (var c in db) {
           for (var s in db[c]) {
             db[c][s] = (db[c][s] || []).filter(function(x) { return x.id !== id; });
           }
         }
-        saveGlobalData();
-        alert('PDF हटा दी गई!');
+        if (liveDB) liveDB.ref('study_data').set(db);
+        alert('PDF हमेशा के लिए हटा दी गई!');
       }
     }
 
@@ -525,7 +448,7 @@
       if (p === 'shivam@2008') {
         isTeacher = true;
         updateAdminState();
-        alert('लॉगिन सफल! अब आप PDF अपलोड और बैनर बदल सकते हैं।');
+        alert('लॉगिन सफल!');
       } else if (p !== null) {
         alert('गलत पासवर्ड!');
       }
@@ -556,7 +479,7 @@
       document.getElementById('uploadModal').style.display = 'none';
     }
 
-    // सार्वजनिक PDF सेव करना (Google Drive)
+    // लाइव PDF सेव करना
     function saveDrivePdf() {
       var targetClass = document.getElementById('modalClassSelect').value;
       var targetSection = document.getElementById('modalSectionSelect').value;
@@ -564,7 +487,7 @@
       var url = document.getElementById('driveUrl').value.trim();
 
       if (!title || !url) {
-        alert('कृपया शीर्षक और Google Drive लिंक दोनों भरें!');
+        alert('कृपया शीर्षक और लिंक दोनों भरें!');
         return;
       }
 
@@ -574,70 +497,27 @@
       db[targetClass][targetSection].push({
         id: Date.now(),
         title: title,
-        desc: 'Class ' + targetClass + 'th • ' + targetSection,
         url: url,
-        stop: false,
-        cls: targetClass
+        stop: false
       });
 
-      saveGlobalData();
+      if (liveDB) {
+        liveDB.ref('study_data').set(db);
+      }
+
       closeUploadModal();
       document.getElementById('driveTitle').value = '';
       document.getElementById('driveUrl').value = '';
-      alert('बधाई! PDF पूरे विश्व के छात्रों के लिए लाइव हो गई है।');
+      alert('बधाई! PDF पूरे विश्व में लाइव हो चुकी है।');
     }
 
-    function chooseLocalPdf() {
-      document.getElementById('directPdfInput').click();
-    }
-
-    function uploadLocalPdfFile(event) {
-      var file = event.target.files[0];
-      if (!file) return;
-
-      var targetClass = document.getElementById('modalClassSelect').value;
-      var targetSection = document.getElementById('modalSectionSelect').value;
-      var defaultTitle = file.name.replace(/\.pdf$/i, '');
-      var title = prompt('PDF का नाम (Title):', defaultTitle);
-      if (!title) return;
-
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var pdfDataUrl = e.target.result;
-
-        if (!db[targetClass]) db[targetClass] = {};
-        if (!db[targetClass][targetSection]) db[targetClass][targetSection] = [];
-
-        db[targetClass][targetSection].push({
-          id: Date.now(),
-          title: title,
-          desc: 'Class ' + targetClass + 'th • ' + targetSection,
-          url: pdfDataUrl,
-          stop: false,
-          cls: targetClass
-        });
-
-        saveGlobalData();
-        closeUploadModal();
-        alert('PDF फ़ोन से जुड़ गई!');
-        document.getElementById('directPdfInput').value = "";
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // सार्वजनिक बैनर बदलना (पूरे विश्व को दिखेगा)
-    function uploadBannerFile(event) {
-      var file = event.target.files[0];
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var imgData = e.target.result;
-          document.getElementById('imgBanner').src = imgData;
-          localStorage.setItem('cc_custom_banner', imgData);
-          saveGlobalData();
-          alert('नया बैनर पूरे विश्व के लिए अपडेट हो गया!');
-        };
-        reader.readAsDataURL(file);
+    // सार्वजनिक लाइव बैनर बदलना
+    function openBannerPrompt() {
+      var url = prompt('नए बैनर का फोटो लिंक (Image Link / Direct URL) डालें:');
+      if (url) {
+        document.getElementById('imgBanner').src = url;
+        if (liveDB) liveDB.ref('study_banner').set(url);
+        alert('बैनर पूरे विश्व के लिए अपडेट हो गया!');
       }
     }
 
@@ -646,7 +526,7 @@
         var id = prompt('नया इंस्टाग्राम ID दर्ज करें:', document.getElementById('txtInstaId').innerText);
         if (id) {
           document.getElementById('txtInstaId').innerText = id;
-          saveGlobalData();
+          if (liveDB) liveDB.ref('study_insta').set(id);
         }
       } else {
         var u = document.getElementById('txtInstaId').innerText.replace('@', '');
